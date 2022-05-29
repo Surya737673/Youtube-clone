@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*:focus{
+    outline: none;
+}
+
+body{
+    position: relative;
+    background: #f0f0f0;
+    font-family: 'roboto', sans-serif;
+}
+
+.navbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 2.5vw;
+}
+
+.toggle-btn{
+    width: 20px;
+    height: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle-btn span{
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #979797;
+}
+
+.toggle-btn span:nth-child(1){
+    top: 0;
+}
+
+.toggle-btn span:nth-child(3){
+    top: 100%;
+}
+
+.logo{
+    height: 30px;
+    margin: -10px 30px 0;
+}
+
+.search-box{
+    margin-left: 100px;
+    position: relative;
+    max-width: 700px;
+    width: 50%;
+    height: 35px;
+    display: flex;
+    /* border: 1px solid red; */
+}
+
+.search-bar{
+    width: 85%;
+    height: 100%;
+    border: 2px solid #dbdbdb;
+    padding: 0 20px;
+    font-size: 16px;
+    text-transform: capitalize;
+    /* border: 1px solid red; */
+
+    
+}
+
+.search-btn{
+    width: 15%;
+    height: 100%;
+    background: #f0f0f0;
+    border: 2px solid #dbdbdb;
+    padding: 5px 0;
+    border-left: none;
+}
+
+.search-btn img{
+    height: 100%;
+}
+.user-options{
+    height: 35px;
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+}
+
+.user-options .icon{
+    height: 80%;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.user-dp{
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-dp img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#whole{
+    display: flex;
+    /* border: 1px solid red; */
+
+
+}
+#videocontainer{
+   /* border: 1px solid red; */
+   height: 500px;
+   width: 900px;
+   margin-top: 5%;
+   margin-left: 20px;
+
+}
+#suggested_container{
+    /* border: 1px solid red; */
+    /* height: 600px; */
+    width: 390px;
+    margin-top: 5%;
+    margin-left: 30px;
+
+
+}
+#suggested_container> div{
+   display: flex;
+   margin-top: 5px;
+}
+    </style>
+</head>
+<body>
+     <div class="navbar">
+        <div class="toggle-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <img src="/img/logo.png" class="logo" alt="">
+        <div class="search-box">
+            <input type="text" class="search-bar" id="search" placeholder="search">
+            <button onclick="searchVideos()" class="search-btn"><img src="img/search.PNG" alt=""></button>  
+        </div>
+        <div class="user-options">
+            <img src="img/video.PNG" class="icon" alt="">
+            <img src="img/grid.PNG" class="icon" alt="">
+            <img src="img/bell.PNG" class="icon" alt="">
+            <div class="user-dp">
+                <img src="img/profile-pic.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div id="whole">
+    <div id="videocontainer"></div>
+    <div id="suggested_container"></div>
+    </div>
+</body>
+</html>
+<script>
+   var videocontainer= document.getElementById('videocontainer');
+   var sugg=document.getElementById("suggested_container")
+    var videos=localStorage.getItem("videoId");
+    var title=localStorage.getItem('videoTitle');
+    var des=  localStorage.getItem('videoDescript');
+    var channelt= localStorage.getItem('videoChannel');
+var search_res=JSON.parse(localStorage.getItem("suggested"))
+         
+
+
+    // console.log(videos)
+   
+const appendVideos=(videos)=>{
+    // console.log(videos)
+    videocontainer.innerHTML=""
+    
+    
+
+        let div=document.createElement("div");
+        div.setAttribute("id","big-vid-box")
+
+
+        let iframe=document.createElement("iframe");
+        iframe.src=`https://www.youtube.com/embed/${videos}`
+
+        
+
+        iframe.setAttribute("id","iframe")
+        iframe.width="100%";
+        iframe.height="500px"
+        iframe.allow="fullscreen";
+
+
+        let tit=document.createElement("h4");
+        tit.innerText=title;
+
+        var channel=document.createElement("h4")
+        channel.innerText=channelt;
+
+        var descript=document.createElement("p")
+        descript.innerText=des;
+
+        
+       
+
+        
+      
+
+        div.append(iframe,tit,channel,descript);
+
+        videocontainer.append(div)
+
+        sugg.append()
+     
+
+    
+}
+
+
+     
+appendVideos(videos)
+
+
+const searchVideos=async ()=>{
+          
+          try{
+                
+            //   let inp=document.getElementById('search').value;
+              
+             let res= await fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${search_res}&key=AIzaSyBGPJ23YmqDtRDn4f0TdEiOeQue49Y1WyY&maxResults=20`)
+              
+              let data=await res.json();
+              console.log(data)
+  
+              let videos=data.items;
+
+              videos.forEach(function(el){
+            
+                let div=document.createElement("div")
+                
+                let img=document.createElement("img")
+                img.src=el.snippet.thumbnails.high.url;
+                img.style.width="200px";
+                img.style.height="150px"
+
+                let title=document.createElement("h5")
+                title.innerText=el.snippet.title
+
+
+                div.append(img,title)
+                
+                document.getElementById("suggested_container").append(div)
+                // suggest.src=
+              })
+             
+            //   appendVideos(videos)
+  
+              
+              
+          }
+          catch(error){
+                   console.log(error)
+          }
+      }
+
+
+      searchVideos()
+
+
+</script>
+
